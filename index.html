@@ -298,12 +298,12 @@
           waypoint-conditioned actor with deployable observations, guided by an asymmetric critic with privileged
           simulation state. Any upstream planner can supply waypoints while the policy handles local dynamic stabilization.
         </p>
-        <h3 class="title is-4 has-text-centered" style="margin-top: 3rem;">Massively Parallel Simulation</h3>
+        <h3 class="title is-4 has-text-centered" style="margin-top: 3rem;">Simulation</h3>
         <div class="parallel-banner">
-          <img src="./static/images/parallel.png" alt="Massively parallel simulation of cylinder balancing tasks">
+          <img src="./static/images/parallel.png" alt="Simulation of cylinder balancing tasks">
         </div>
         <p class="caption has-text-centered">
-          BalancingAct is trained in massively parallel simulation so the policy sees many contact, inertia,
+          BalancingAct uses parallel simulation during training and for evaluation so the policy sees many contact, inertia,
           and disturbance variations before deployment.
         </p>
       </div>
