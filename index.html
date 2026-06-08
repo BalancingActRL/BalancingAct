@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="BalancingAct: Waypoint Guided Reinforcement Learning for Dynamically Sensitive Tasks. A framework that trains lightweight RL heads conditioned on waypoints for precise dynamic stabilization.">
+  <meta name="keywords" content="BalancingAct, Reinforcement Learning, Dynamically Sensitive Tasks, Sim-to-Real, Robotics">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BalancingAct: Waypoint Guided RL for Dynamically Sensitive Tasks</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<section class="hero balancing-hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered hero-layout">
+        <div class="column is-four-fifths has-text-centered">
+          <h1 class="title is-1 publication-title logo-title">
+            <img src="./static/images/balancingact-title.png" alt="BalancingAct">
+          </h1>
+          <h2 class="subtitle is-4 hero-tagline">Waypoint-Guided Robot Stabilization</h2>
+          <div class="is-size-5 publication-authors hero-authors">
+            <span class="author-block">Anonymous Author(s)</span>
+          </div>
+          <div class="column has-text-centered hero-links">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="./static/papers/balancing_act.pdf"
+                   class="external-link button is-normal is-rounded is-accent">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#"
+                   class="external-link button is-normal is-rounded coming-soon"
+                   title="Code release coming soon">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code (Coming Soon)</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="title is-3 has-text-centered section-title">Learning to Keep the Payload Stable</h2>
+      <p class="subtitle has-text-centered">
+        Use the arrows to switch between long-tight, long-medium, and short-gentle cylinder waiter comparisons.
+        LQR tips early, while <span class="balancingact">BalancingAct</span> adapts its motion to keep the cylinder upright.
+      </p>
+      <div class="video-carousel" data-video-carousel>
+        <button class="video-carousel-arrow video-carousel-prev"
+                type="button"
+                aria-label="Show previous video comparison"
+                data-carousel-prev>
+          &lsaquo;
+        </button>
+        <div class="video-carousel-slides">
+          <div class="video-carousel-slide is-active" data-video-slide>
+            <div class="comparison-grid teaser-video-grid">
+              <div class="comparison-panel lqr">
+                <div class="panel-header">LQR Baseline</div>
+                <video controls muted loop playsinline>
+                  <source src="./static/videos/short_tight_lqr.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="comparison-panel ours">
+                <div class="panel-header">BalancingAct (Ours)</div>
+                <video controls muted loop playsinline>
+                  <source src="./static/videos/short_tight_ours.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            <p class="caption has-text-centered video-slide-caption">
+              <strong>Long-tight spline comparison.</strong> LQR and BalancingAct are compared on a longer,
+              high-curvature path where the policy still has to stabilize the cylinder while tracking the waypoint plan.
+            </p>
+          </div>
+          <div class="video-carousel-slide" data-video-slide>
+            <div class="comparison-grid teaser-video-grid">
+              <div class="comparison-panel lqr">
+                <div class="panel-header">LQR Baseline</div>
+                <video controls muted loop playsinline>
+                  <source src="./static/videos/long_tight_lqr.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="comparison-panel ours">
+                <div class="panel-header">BalancingAct (Ours)</div>
+                <video controls muted loop playsinline>
+                  <source src="./static/videos/long_tight_ours.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            <p class="caption has-text-centered video-slide-caption">
+              <strong>Long-medium spline comparison.</strong> LQR tips early on a longer, moderate-curvature path, while
+              BalancingAct keeps the cylinder stable through the trajectory and final hold.
+            </p>
+          </div>
+          <div class="video-carousel-slide" data-video-slide>
+            <div class="comparison-grid teaser-video-grid">
+              <div class="comparison-panel lqr">
+                <div class="panel-header">LQR Baseline</div>
+                <video controls muted loop playsinline>
+                  <source src="./static/videos/medium_medium_lqr.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="comparison-panel ours">
+                <div class="panel-header">BalancingAct (Ours)</div>
+                <video controls muted loop playsinline>
+                  <source src="./static/videos/medium_medium_ours.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            <p class="caption has-text-centered video-slide-caption">
+              <strong>Short-gentle spline comparison.</strong> LQR and BalancingAct are compared on a shorter,
+              gentle-curvature path where both tracking fidelity and dynamic stabilization must be balanced.
+            </p>
+          </div>
+        </div>
+        <button class="video-carousel-arrow video-carousel-next"
+                type="button"
+                aria-label="Show next video comparison"
+                data-carousel-next>
+          &rsaquo;
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt-bg" id="abstract">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 section-title">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Recent robotic foundation models have demonstrated impressive generalization across diverse tasks,
+            yet consistently struggle with <strong>dynamically sensitive manipulation</strong> where physical
+            precision is critical for success. The standard remedy, task-specific fine-tuning, demands additional
+            data collection, significant compute, and risks catastrophic forgetting of previously acquired capabilities.
+          </p>
+          <p>
+            We present <span class="balancingact">BalancingAct</span>, a framework that trains lightweight
+            reinforcement learning (RL) heads in simulation, conditioned on <em>waypoints</em> rather than raw goals.
+            This decouples global planning, which can be delegated to any base policy such as one generated from
+            a Vision-Language-Action (VLA) model, classical controller, or teleoperation system, from the locally
+            precise, dynamics-aware execution that the RL policy learns to handle.
+          </p>
+          <p>
+            BalancingAct requires no additional real-world data collection, outperforms classical controllers on
+            dynamically sensitive tasks, and through aggressive domain randomization over physical parameters, learns
+            execution policies robust to variations in contact, inertia, and disturbance conditions that classical
+            approaches fail to handle. We validate BalancingAct on a suite of dynamically sensitive manipulation
+            tasks in simulation and demonstrate successful real-world deployment.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="problem">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 section-title">Problem Formulation</h2>
+        <div class="content has-text-justified">
+          <p>
+            A <strong>dynamically sensitive task</strong> is one in which the system state evolves under nonlinear,
+            underactuated dynamics such that small deviations in control inputs can produce divergent outcomes.
+            For our object-centric tasks, consider a system with state
+            <em>s<sub>t</sub> = (q<sub>t</sub>, q&#775;<sub>t</sub>, x<sub>t</sub>, x&#775;<sub>t</sub>)</em>,
+            where <em>q<sub>t</sub></em> denotes robot joint positions/velocities and <em>x<sub>t</sub></em> denotes
+            the position and velocity of a secondary object subject to contact and gravity.
+          </p>
+          <p>
+            The object dynamics take the form <em>x&#776;<sub>t</sub> = f(x<sub>t</sub>, x&#775;<sub>t</sub>, u<sub>t</sub>, &lambda;<sub>t</sub>)</em>,
+            where <em>u<sub>t</sub></em> is the control input and <em>&lambda;<sub>t</sub></em> represents discontinuous
+            contact forces. A task is dynamically sensitive when the sensitivity of object dynamics to control inputs
+            is large or poorly conditioned, meaning errors in <em>u<sub>t</sub></em> produce disproportionately large
+            deviations in <em>x<sub>t</sub></em> that compound over time and are difficult to recover from.
+          </p>
+          <div class="problem-formula">
+            Transport and balancing tasks are a canonical instantiation: the robot must track a reference trajectory
+            <strong>W = {w<sub>1</sub>, w<sub>2</sub>, &hellip;, w<sub>N</sub>}</strong> of end-effector waypoints while
+            simultaneously satisfying a stability constraint <strong>&phi;(x<sub>t</sub>) &le; 0</strong> on the carried object.
+            The coupling between tracking and stabilization is what makes these tasks hard: aggressive motion toward the
+            next waypoint excites object dynamics that risk violating &phi;, while conservative motion sacrifices tracking fidelity.
+          </div>
+          <p>
+            We evaluate on three tasks, each requiring an object to remain stable while the end effector tracks a
+            waypoint-scheduled spline trajectory. The challenge is twofold: maintaining stability during motion, and
+            damping out accumulated instabilities during the terminal hold at the endpoint.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="columns is-multiline" style="margin-top: 2rem;">
+      <div class="column is-one-third">
+        <div class="task-card">
+          <img src="./static/images/ball_balance.png" alt="Ball balancing task in simulation">
+          <div class="task-body">
+            <span class="task-tag ball">Ball Balancing</span>
+            <h3 class="title is-5">Balance Tray Transport</h3>
+            <p>
+              The robot moves a tray along a planned path while keeping the ball from rolling off.
+              The goal is smooth motion that keeps the ball supported and close to the tray center.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="column is-one-third">
+        <div class="task-card">
+          <img src="./static/images/cylinder.png" alt="Cylinder waiter task in simulation">
+          <div class="task-body">
+            <span class="task-tag cylinder">Cylinder Waiter</span>
+            <h3 class="title is-5">Upright Cylinder Transport</h3>
+            <p>
+              The robot carries an upright cylinder on the same tray. The goal is to follow the path
+              without shaking the tray enough to make the cylinder tip over.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="column is-one-third">
+        <div class="task-card">
+          <img src="./static/images/rope.png" alt="Heavy ball container transport task in simulation">
+          <div class="task-body">
+            <span class="task-tag container">Container Transport</span>
+            <h3 class="title is-5">Heavy Ball Container</h3>
+            <p>
+              The robot moves a suspended container holding a heavy ball. The goal is to follow the
+              path while damping swing and tilt, instead of simply dragging the container along.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt-bg" id="method">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 section-title">Method</h2>
+        <div class="content has-text-justified">
+          <p>
+            <span class="balancingact">BalancingAct</span> separates the job of planning where the robot should go
+            from the harder job of keeping the payload stable while it gets there. A planner, VLA, classical controller,
+            or teleoperator can provide waypoints; the learned policy turns those waypoints into stabilizing end-effector
+            motions.
+          </p>
+          <p>
+            During deployment, the actor only uses observations that are available onboard, such as robot state, wrist
+            force/torque, object pose, recent motion history, and upcoming waypoints. During training, an asymmetric
+            critic also sees privileged simulator state, giving the policy richer feedback without requiring those
+            privileged signals on the real robot.
+          </p>
+          <p>
+            Policies are trained with FlashSAC in MJLab using many parallel MuJoCo environments and randomized physical
+            conditions. Because FlashSAC is off-policy, data collection is decoupled from learning: rare terminal
+            failures can be replayed and learned from repeatedly, instead of waiting for fresh complete rollouts as
+            on-policy methods like PPO must. This makes learning much faster and better suited to sparse failures,
+            delayed terminations, and recovery behaviors that only appear late in an episode.
+          </p>
+        </div>
+        <img src="./static/images/method.png" alt="BalancingAct method schematic" class="method-figure" style="width: 100%; margin-top: 1.5rem;">
+        <p class="has-text-centered is-size-7" style="margin-top: 0.75rem; color: var(--text-muted);">
+          <strong>Figure 3.</strong> BalancingAct uses FlashSAC, an off-policy RL algorithm, to train a
+          waypoint-conditioned actor with deployable observations, guided by an asymmetric critic with privileged
+          simulation state. Any upstream planner can supply waypoints while the policy handles local dynamic stabilization.
+        </p>
+        <h3 class="title is-4 has-text-centered" style="margin-top: 3rem;">Massively Parallel Simulation</h3>
+        <div class="parallel-banner">
+          <img src="./static/images/parallel.png" alt="Massively parallel simulation of cylinder balancing tasks">
+        </div>
+        <p class="caption has-text-centered">
+          BalancingAct is trained in massively parallel simulation so the policy sees many contact, inertia,
+          and disturbance variations before deployment.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="results">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 section-title">Results</h2>
+        <div class="content has-text-justified">
+          <p>
+            We evaluate each policy across path lengths, curve difficulties, stationary holds, and both quiet and
+            disturbed settings. Each task is domain-randomized over friction and other task-specific environment
+            properties, such as object mass, geometry, payload behavior, and disturbance forces. A rollout only succeeds
+            if the robot tracks the planned motion and keeps the object stable through the final hold, so the results
+            measure both path following and dynamic stabilization.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-figure" style="margin-top: 2rem;">
+      <h3 class="title is-4 has-text-centered">Ball Balancing Task</h3>
+      <img src="./static/images/ball_results.png" alt="Ball balancing task results comparing PPO, Residual RL, LQR, and BalancingAct">
+      <div class="caption has-text-justified">
+        <strong>Figure 5 (top).</strong> On ball balancing, <span class="balancingact">BalancingAct</span> achieves the
+        strongest combination of success, survival, and spline tracking. PPO and residual RL struggle to learn useful
+        stabilization, while LQR is less robust under randomized dynamics and disturbances.
+      </div>
+    </div>
+
+    <div class="results-figure">
+      <h3 class="title is-4 has-text-centered">Cylinder Waiter Task</h3>
+      <img src="./static/images/cylinder_results.png" alt="Cylinder waiter task results comparing PPO, Residual RL, LQR, and BalancingAct">
+      <div class="caption has-text-justified">
+        <strong>Figure 5 (bottom).</strong> The cylinder task exposes the main gap between learned stabilization and
+        fixed hand-tuned control. LQR often tips early under changing friction, inertia, and disturbances, while
+        <span class="balancingact">BalancingAct</span> learns to adjust its trajectory online.
+      </div>
+    </div>
+
+    <div class="results-figure">
+      <h3 class="title is-4 has-text-centered">Heavy Ball Container Transport</h3>
+      <img src="./static/images/container_results.png" alt="Heavy container transport results comparing spline following baseline and BalancingAct">
+      <div class="caption has-text-justified">
+        <strong>Figure 11 (Appendix C).</strong> On heavy container transport, optimizing only for path following is not
+        enough. Adding payload stability to the reward reduces tracking error, swing, tilt, and swing rate compared with
+        a spline-following baseline.
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section alt-bg" id="contributions">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3 section-title">Main Contributions</h2>
+        <div class="content has-text-justified">
+          <ul class="contribution-list">
+            <li><strong>A waypoint-conditioned RL head:</strong> BalancingAct can sit behind a VLA, classical controller, or teleoperation system, taking planned waypoints and handling local dynamic stabilization.</li>
+            <li><strong>Simulation experiments for dynamically sensitive transport:</strong> We evaluate balancing and transport tasks under varied physical conditions and disturbances, with rewards that balance path tracking against object stability.</li>
+            <li><strong>Preliminary zero-shot deployment analysis:</strong> We study what transfers from simulation to hardware and identify the perception and dynamics gaps that matter most for real-world balancing.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title section-title">BibTeX</h2>
+    <pre><code>@article{balancingact2026,
+  author    = {Anonymous},
+  title     = {BalancingAct: Waypoint Guided Reinforcement Learning For Dynamically Sensitive Tasks},
+  journal   = {CoRL},
+  year      = {2026},
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="./static/papers/balancing_act.pdf" title="Paper PDF">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link coming-soon" href="#" title="Code coming soon">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content has-text-centered">
+          <p>
+            Website template adapted from
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+            Licensed under
+            <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
